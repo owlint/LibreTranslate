@@ -15,8 +15,14 @@ RUN apt-get update && apt-get upgrade --assume-yes
 
 RUN pip install --upgrade pip
 
-COPY . .
+RUN addgroup --gid 1000 --system lt && adduser --uid 1000 --gid 1000 --system lt
 
+RUN chown -R lt:lt /app
+COPY --chown=lt:lt . .
+
+USER lt
+
+ENV PATH /home/lt/.local/bin:$PATH
 
 RUN if [ "$with_models" = "true" ]; then  \
   # install only the dependencies first
